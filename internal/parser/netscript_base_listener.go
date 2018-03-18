@@ -50,8 +50,8 @@ func (s *BaseNetscriptListener) EnterMethod(ctx *MethodContext) {}
 // ExitMethod is called when production method is exited.
 func (s *BaseNetscriptListener) ExitMethod(ctx *MethodContext) {}
 
-// EnterArguments is called when production arguments is entered.
-func (s *BaseNetscriptListener) EnterArguments(ctx *ArgumentsContext) {}
+// EnterUrl is called when production url is entered.
+func (s *BaseNetscriptListener) EnterUrl(ctx *UrlContext) {}
 
-// ExitArguments is called when production arguments is exited.
-func (s *BaseNetscriptListener) ExitArguments(ctx *ArgumentsContext) {}
+// ExitUrl is called when production url is exited.
+func (s *BaseNetscriptListener) ExitUrl(ctx *UrlContext) {}

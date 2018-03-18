@@ -15,19 +15,18 @@ var _ = reflect.Copy
 var _ = strconv.Itoa
 
 var parserATN = []uint16{
-	3, 24715, 42794, 33075, 47597, 16764, 15335, 30598, 22884, 3, 7, 36, 4,
+	3, 24715, 42794, 33075, 47597, 16764, 15335, 30598, 22884, 3, 7, 34, 4,
 	2, 9, 2, 4, 3, 9, 3, 4, 4, 9, 4, 4, 5, 9, 5, 4, 6, 9, 6, 4, 7, 9, 7, 3,
-	2, 6, 2, 16, 10, 2, 13, 2, 14, 2, 17, 3, 2, 3, 2, 3, 3, 3, 3, 5, 3, 24,
-	10, 3, 3, 4, 3, 4, 3, 5, 3, 5, 3, 5, 3, 5, 3, 6, 3, 6, 3, 7, 3, 7, 3, 7,
-	2, 2, 8, 2, 4, 6, 8, 10, 12, 2, 2, 2, 31, 2, 15, 3, 2, 2, 2, 4, 23, 3,
-	2, 2, 2, 6, 25, 3, 2, 2, 2, 8, 27, 3, 2, 2, 2, 10, 31, 3, 2, 2, 2, 12,
-	33, 3, 2, 2, 2, 14, 16, 5, 4, 3, 2, 15, 14, 3, 2, 2, 2, 16, 17, 3, 2, 2,
-	2, 17, 15, 3, 2, 2, 2, 17, 18, 3, 2, 2, 2, 18, 19, 3, 2, 2, 2, 19, 20,
-	7, 2, 2, 3, 20, 3, 3, 2, 2, 2, 21, 24, 5, 6, 4, 2, 22, 24, 5, 8, 5, 2,
-	23, 21, 3, 2, 2, 2, 23, 22, 3, 2, 2, 2, 24, 5, 3, 2, 2, 2, 25, 26, 7, 4,
-	2, 2, 26, 7, 3, 2, 2, 2, 27, 28, 5, 10, 6, 2, 28, 29, 7, 3, 2, 2, 29, 30,
-	5, 12, 7, 2, 30, 9, 3, 2, 2, 2, 31, 32, 7, 5, 2, 2, 32, 11, 3, 2, 2, 2,
-	33, 34, 7, 6, 2, 2, 34, 13, 3, 2, 2, 2, 4, 17, 23,
+	2, 6, 2, 16, 10, 2, 13, 2, 14, 2, 17, 3, 3, 3, 3, 5, 3, 22, 10, 3, 3, 4,
+	3, 4, 3, 5, 3, 5, 3, 5, 3, 5, 3, 6, 3, 6, 3, 7, 3, 7, 3, 7, 2, 2, 8, 2,
+	4, 6, 8, 10, 12, 2, 2, 2, 29, 2, 15, 3, 2, 2, 2, 4, 21, 3, 2, 2, 2, 6,
+	23, 3, 2, 2, 2, 8, 25, 3, 2, 2, 2, 10, 29, 3, 2, 2, 2, 12, 31, 3, 2, 2,
+	2, 14, 16, 5, 4, 3, 2, 15, 14, 3, 2, 2, 2, 16, 17, 3, 2, 2, 2, 17, 15,
+	3, 2, 2, 2, 17, 18, 3, 2, 2, 2, 18, 3, 3, 2, 2, 2, 19, 22, 5, 6, 4, 2,
+	20, 22, 5, 8, 5, 2, 21, 19, 3, 2, 2, 2, 21, 20, 3, 2, 2, 2, 22, 5, 3, 2,
+	2, 2, 23, 24, 7, 4, 2, 2, 24, 7, 3, 2, 2, 2, 25, 26, 5, 10, 6, 2, 26, 27,
+	7, 3, 2, 2, 27, 28, 5, 12, 7, 2, 28, 9, 3, 2, 2, 2, 29, 30, 7, 5, 2, 2,
+	30, 11, 3, 2, 2, 2, 31, 32, 7, 6, 2, 2, 32, 13, 3, 2, 2, 2, 4, 17, 21,
 }
 var deserializer = antlr.NewATNDeserializer(nil)
 var deserializedATN = deserializer.DeserializeFromUInt16(parserATN)
@@ -40,7 +39,7 @@ var symbolicNames = []string{
 }
 
 var ruleNames = []string{
-	"script", "line", "comment", "command", "method", "arguments",
+	"script", "line", "comment", "command", "method", "url",
 }
 var decisionToDFA = make([]*antlr.DFA, len(deserializedATN.DecisionToState))
 
@@ -80,12 +79,12 @@ const (
 
 // NetscriptParser rules.
 const (
-	NetscriptParserRULE_script    = 0
-	NetscriptParserRULE_line      = 1
-	NetscriptParserRULE_comment   = 2
-	NetscriptParserRULE_command   = 3
-	NetscriptParserRULE_method    = 4
-	NetscriptParserRULE_arguments = 5
+	NetscriptParserRULE_script  = 0
+	NetscriptParserRULE_line    = 1
+	NetscriptParserRULE_comment = 2
+	NetscriptParserRULE_command = 3
+	NetscriptParserRULE_method  = 4
+	NetscriptParserRULE_url     = 5
 )
 
 // IScriptContext is an interface to support dynamic dispatch.
@@ -125,10 +124,6 @@ func NewScriptContext(parser antlr.Parser, parent antlr.ParserRuleContext, invok
 }
 
 func (s *ScriptContext) GetParser() antlr.Parser { return s.parser }
-
-func (s *ScriptContext) EOF() antlr.TerminalNode {
-	return s.GetToken(NetscriptParserEOF, 0)
-}
 
 func (s *ScriptContext) AllLine() []ILineContext {
 	var ts = s.GetTypedRuleContexts(reflect.TypeOf((*ILineContext)(nil)).Elem())
@@ -208,10 +203,6 @@ func (p *NetscriptParser) Script() (localctx IScriptContext) {
 		p.SetState(15)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
-	}
-	{
-		p.SetState(17)
-		p.Match(NetscriptParserEOF)
 	}
 
 	return localctx
@@ -316,19 +307,19 @@ func (p *NetscriptParser) Line() (localctx ILineContext) {
 	}()
 
 	p.EnterOuterAlt(localctx, 1)
-	p.SetState(21)
+	p.SetState(19)
 	p.GetErrorHandler().Sync(p)
 
 	switch p.GetTokenStream().LA(1) {
 	case NetscriptParserCOMMENT:
 		{
-			p.SetState(19)
+			p.SetState(17)
 			p.Comment()
 		}
 
 	case NetscriptParserMETHOD:
 		{
-			p.SetState(20)
+			p.SetState(18)
 			p.Command()
 		}
 
@@ -423,7 +414,7 @@ func (p *NetscriptParser) Comment() (localctx ICommentContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(23)
+		p.SetState(21)
 		p.Match(NetscriptParserCOMMENT)
 	}
 
@@ -478,14 +469,14 @@ func (s *CommandContext) Method() IMethodContext {
 	return t.(IMethodContext)
 }
 
-func (s *CommandContext) Arguments() IArgumentsContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*IArgumentsContext)(nil)).Elem(), 0)
+func (s *CommandContext) Url() IUrlContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*IUrlContext)(nil)).Elem(), 0)
 
 	if t == nil {
 		return nil
 	}
 
-	return t.(IArgumentsContext)
+	return t.(IUrlContext)
 }
 
 func (s *CommandContext) GetRuleContext() antlr.RuleContext {
@@ -530,16 +521,16 @@ func (p *NetscriptParser) Command() (localctx ICommandContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(25)
+		p.SetState(23)
 		p.Method()
 	}
 	{
-		p.SetState(26)
+		p.SetState(24)
 		p.Match(NetscriptParserT__0)
 	}
 	{
-		p.SetState(27)
-		p.Arguments()
+		p.SetState(25)
+		p.Url()
 	}
 
 	return localctx
@@ -629,78 +620,78 @@ func (p *NetscriptParser) Method() (localctx IMethodContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(29)
+		p.SetState(27)
 		p.Match(NetscriptParserMETHOD)
 	}
 
 	return localctx
 }
 
-// IArgumentsContext is an interface to support dynamic dispatch.
-type IArgumentsContext interface {
+// IUrlContext is an interface to support dynamic dispatch.
+type IUrlContext interface {
 	antlr.ParserRuleContext
 
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
-	// IsArgumentsContext differentiates from other interfaces.
-	IsArgumentsContext()
+	// IsUrlContext differentiates from other interfaces.
+	IsUrlContext()
 }
 
-type ArgumentsContext struct {
+type UrlContext struct {
 	*antlr.BaseParserRuleContext
 	parser antlr.Parser
 }
 
-func NewEmptyArgumentsContext() *ArgumentsContext {
-	var p = new(ArgumentsContext)
+func NewEmptyUrlContext() *UrlContext {
+	var p = new(UrlContext)
 	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(nil, -1)
-	p.RuleIndex = NetscriptParserRULE_arguments
+	p.RuleIndex = NetscriptParserRULE_url
 	return p
 }
 
-func (*ArgumentsContext) IsArgumentsContext() {}
+func (*UrlContext) IsUrlContext() {}
 
-func NewArgumentsContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *ArgumentsContext {
-	var p = new(ArgumentsContext)
+func NewUrlContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *UrlContext {
+	var p = new(UrlContext)
 
 	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(parent, invokingState)
 
 	p.parser = parser
-	p.RuleIndex = NetscriptParserRULE_arguments
+	p.RuleIndex = NetscriptParserRULE_url
 
 	return p
 }
 
-func (s *ArgumentsContext) GetParser() antlr.Parser { return s.parser }
+func (s *UrlContext) GetParser() antlr.Parser { return s.parser }
 
-func (s *ArgumentsContext) TEXT() antlr.TerminalNode {
+func (s *UrlContext) TEXT() antlr.TerminalNode {
 	return s.GetToken(NetscriptParserTEXT, 0)
 }
 
-func (s *ArgumentsContext) GetRuleContext() antlr.RuleContext {
+func (s *UrlContext) GetRuleContext() antlr.RuleContext {
 	return s
 }
 
-func (s *ArgumentsContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
+func (s *UrlContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
 	return antlr.TreesStringTree(s, ruleNames, recog)
 }
 
-func (s *ArgumentsContext) EnterRule(listener antlr.ParseTreeListener) {
+func (s *UrlContext) EnterRule(listener antlr.ParseTreeListener) {
 	if listenerT, ok := listener.(NetscriptListener); ok {
-		listenerT.EnterArguments(s)
+		listenerT.EnterUrl(s)
 	}
 }
 
-func (s *ArgumentsContext) ExitRule(listener antlr.ParseTreeListener) {
+func (s *UrlContext) ExitRule(listener antlr.ParseTreeListener) {
 	if listenerT, ok := listener.(NetscriptListener); ok {
-		listenerT.ExitArguments(s)
+		listenerT.ExitUrl(s)
 	}
 }
 
-func (p *NetscriptParser) Arguments() (localctx IArgumentsContext) {
-	localctx = NewArgumentsContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 10, NetscriptParserRULE_arguments)
+func (p *NetscriptParser) Url() (localctx IUrlContext) {
+	localctx = NewUrlContext(p, p.GetParserRuleContext(), p.GetState())
+	p.EnterRule(localctx, 10, NetscriptParserRULE_url)
 
 	defer func() {
 		p.ExitRule()
@@ -720,7 +711,7 @@ func (p *NetscriptParser) Arguments() (localctx IArgumentsContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(31)
+		p.SetState(29)
 		p.Match(NetscriptParserTEXT)
 	}
 

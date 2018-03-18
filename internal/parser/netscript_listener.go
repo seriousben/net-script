@@ -22,8 +22,8 @@ type NetscriptListener interface {
 	// EnterMethod is called when entering the method production.
 	EnterMethod(c *MethodContext)
 
-	// EnterArguments is called when entering the arguments production.
-	EnterArguments(c *ArgumentsContext)
+	// EnterUrl is called when entering the url production.
+	EnterUrl(c *UrlContext)
 
 	// ExitScript is called when exiting the script production.
 	ExitScript(c *ScriptContext)
@@ -40,6 +40,6 @@ type NetscriptListener interface {
 	// ExitMethod is called when exiting the method production.
 	ExitMethod(c *MethodContext)
 
-	// ExitArguments is called when exiting the arguments production.
-	ExitArguments(c *ArgumentsContext)
+	// ExitUrl is called when exiting the url production.
+	ExitUrl(c *UrlContext)
 }

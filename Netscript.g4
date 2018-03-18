@@ -3,7 +3,7 @@ grammar Netscript;
 
 // Parser Rules
 script
-   : line+ EOF
+   : line+
    ;
 
 line
@@ -15,14 +15,14 @@ comment
    ;
 
 command
-   : method ' ' arguments
+   : method ' ' url
    ;
 
 method
    : METHOD
    ;
 
-arguments
+url
    : TEXT
    ;
 
