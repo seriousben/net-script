@@ -1,0 +1,4 @@
+# Websocket connection
+WS http://example.com
+# HTTP GET call
+GET http://example.com

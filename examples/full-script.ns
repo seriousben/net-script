@@ -1,0 +1,41 @@
+#
+# Ideas taken from https://github.com/pashky/restclient.el 
+#
+
+# Assign jwt from js script
+#   Uses https://github.com/robertkrimen/otto OR just exec maybe?
+#   Calls `function ns_entry(/*no args*/) { return JSON.stringify({ jwt: "val" }) }`
+#   Uses https://github.com/savaki/jq to parse javascript fields
+:jwt |= generate_jwt.js | .jwt 
+
+# Websocket connection
+WS http://example.com
+User-Agent: net script
+Authorization: :jwt
+
+ws message 1
+ws message 2
+ws message 3
+ws message 4
+ws message 5
+ws message 6
+ws message 7
+
+# Pipe data to websocket.js
+#   Uses https://github.com/robertkrimen/otto or just exec maybe?
+#   Calls `function ns_entry(allSentMessages, allReceivedMessages) { return JSON.stringify({ key: "val", key2: "val2" }) }`
+:wsdata |= websocket.js
+
+# POST with json body
+POST http://example.com 
+User-Agent: net script
+Content-Type: application/json
+
+{
+  "example": "{{ :wsdata | .key2 }}"
+}
+
+# GET with a query param
+GET http://example.com
+? key "escaped query param value"
+
