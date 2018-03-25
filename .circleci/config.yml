@@ -35,7 +35,7 @@ jobs:
             docker build -f $dockerfile --tag cli-builder:$CIRCLE_BUILD_NUM .
             docker run --name \
                 test-$CIRCLE_BUILD_NUM cli-builder:$CIRCLE_BUILD_NUM \
-                bash -c 'scripts/test-unit-with-coverage'
+                bash -c 'hack/test-unit-with-coverage'
       - run:
           name: "Upload to Codecov"
           command: |
@@ -60,7 +60,7 @@ jobs:
             docker build -f $dockerfile --tag cli-builder:$CIRCLE_BUILD_NUM .
             docker run --name \
                 test-$CIRCLE_BUILD_NUM cli-builder:$CIRCLE_BUILD_NUM \
-                bash -c 'scripts/test-unit'
+                bash -c 'hack/test-unit'
 
 workflows:
   version: 2
