@@ -15,18 +15,6 @@ jobs:
       - run:
           command: docker version
       - run:
-          name: "Install Dependencies"
-          command: |
-            dockerfile=dockerfiles/Dockerfile
-            echo "COPY . ." >> $dockerfile
-            docker build -f $dockerfile --tag cli-builder:$CIRCLE_BUILD_NUM .
-            docker run --name \
-                deps-$CIRCLE_BUILD_NUM cli-builder:$CIRCLE_BUILD_NUM \
-                dep ensure
-            docker cp \
-                deps-$CIRCLE_BUILD_NUM:/go/src/github.com/seriousben/net-script/vendor \
-                vendor
-      - run:
           name: "Lint"
           command: |
             dockerfile=dockerfiles/Dockerfile.lint
