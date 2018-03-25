@@ -83,7 +83,7 @@ func headerParser() parser.Func {
 				return []string{value0.(string), value3.(string)}, nil
 			}),
 		),
-		terminal.Regexp("header name", "[^:]*", false, 0, "HEADER_NAME"),
+		terminal.Regexp("header name", "[A-Za-z-_]*", false, 0, "HEADER_NAME"),
 		terminal.Rune(':', "COLON"),
 		spaceToken,
 		terminal.Regexp("any char", ".*", false, 0, "HEADER_VALUE"),
