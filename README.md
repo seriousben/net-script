@@ -1,5 +1,10 @@
 # netscript communication language
 
+[![GoDoc](https://godoc.org/github.com/seriousben/net-script?status.svg)](https://godoc.org/github.com/seriousben/net-script)
+[![CircleCI](https://circleci.com/gh/seriousben/net-script/tree/master.svg?style=shield)](https://circleci.com/gh/seriousben/net-script/tree/master)
+[![Go Reportcard](https://goreportcard.com/badge/github.com/seriousben/net-script)](https://goreportcard.com/report/github.com/seriousben/net-script)
+[![codecov](https://codecov.io/gh/seriousben/net-script/branch/master/graph/badge.svg)](https://codecov.io/gh/seriousben/net-script)
+
 Write runnable programs against remote servers.
 
 ## Usage
