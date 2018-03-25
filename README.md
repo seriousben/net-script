@@ -56,6 +56,9 @@ DELETE https://httpbin.org/delete
 # Get image
 GET https://httpbin.org/image/png
 
+```
+
+```
 $ netscript run http.ns
 # Get IP
 GET https://httpbin.org/ip
