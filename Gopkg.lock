@@ -58,6 +58,12 @@
   version = "v1.0.0"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/seriousben/is-it-binary"
+  packages = ["binary"]
+  revision = "6538d74dcf8f8c5f5260eb3701fb0be1570d58a5"
+
+[[projects]]
   name = "github.com/spf13/cobra"
   packages = ["."]
   revision = "7b2c5ac9fc04fc5efafb60700713d4fa609b777b"
@@ -72,6 +78,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "8ba9164e3336336811a41b75391b28b6569957b7ccf7827740bd168c7207ec3d"
+  inputs-digest = "5f5511f0f188361ad2c6b1cc491af1312cd826b045d27dc41aadd0d2ab181954"
   solver-name = "gps-cdcl"
   solver-version = 1

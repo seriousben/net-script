@@ -1,0 +1,30 @@
+# Get IP
+GET https://httpbin.org/ip
+
+# Get headers
+GET https://httpbin.org/headers
+X-Custom-Header: Custom value
+
+# Post data
+POST https://httpbin.org/post
+
+DATA
+
+# Post JSON
+POST https://httpbin.org/post
+
+{"json": true}
+
+# Patch DATA
+PATCH https://httpbin.org/patch
+
+DATA
+
+# Put
+PUT https://httpbin.org/put
+
+# Delete
+DELETE https://httpbin.org/delete
+
+# Get image
+GET https://httpbin.org/image/png

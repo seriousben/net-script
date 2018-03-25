@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -eu -o pipefail
+
+pkgs=${@:-$(go list ./... | grep -v '/vendor/')}
+go test -test.timeout 10s -v "$pkgs"
