@@ -2,12 +2,26 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 
-	"github.com/seriousben/net-script/internal/builder"
 	"github.com/seriousben/net-script/internal/executor"
+	"github.com/seriousben/net-script/internal/parser"
+	"github.com/seriousben/net-script/internal/types"
 	"github.com/spf13/cobra"
 )
+
+func parseCommands(filename string) ([]types.Command, error) {
+	b, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+	cmds, err := parser.Parse(b)
+	if err != nil {
+		return nil, err
+	}
+	return cmds, nil
+}
 
 func main() {
 	var cmdLint = &cobra.Command{
@@ -17,11 +31,11 @@ func main() {
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			fmt.Println("Linting...")
-			cmds, err := builder.Build(args[0])
+			cmds, err := parseCommands(args[0])
 			if err != nil {
 				return err
 			}
-			fmt.Printf("%s", cmds)
+			fmt.Printf("%+v", cmds)
 			return nil
 		},
 	}
@@ -32,7 +46,7 @@ func main() {
 		Long:  "Run a netscript program",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cmds, err := builder.Build(args[0])
+			cmds, err := parseCommands(args[0])
 			if err != nil {
 				return err
 			}
@@ -43,7 +57,7 @@ func main() {
 	var rootCmd = &cobra.Command{
 		Use: "netscript",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cmds, err := builder.Build(args[0])
+			cmds, err := parseCommands(args[0])
 			if err != nil {
 				return err
 			}
