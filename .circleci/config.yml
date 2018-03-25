@@ -46,22 +46,6 @@ jobs:
             curl -s https://codecov.io/bash | bash || \
                 echo 'Codecov failed to upload'
 
-  test-1.8:
-    <<: *defaults
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run:
-          name: "Unit Test GO 1.8"
-          command: |
-            dockerfile=dockerfiles/Dockerfile
-            sed -i -e 's/FROM\s\+golang.*/FROM golang:1.8.3-alpine/' $dockerfile
-            echo "COPY . ." >> $dockerfile
-            docker build -f $dockerfile --tag cli-builder:$CIRCLE_BUILD_NUM .
-            docker run --name \
-                test-$CIRCLE_BUILD_NUM cli-builder:$CIRCLE_BUILD_NUM \
-                bash -c 'hack/test-unit'
-
 workflows:
   version: 2
   ci:
