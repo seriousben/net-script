@@ -2,16 +2,60 @@
 
 
 [[projects]]
-  name = "github.com/antlr/antlr4"
-  packages = ["runtime/Go/antlr"]
-  revision = "bdc05c87be2ad981744223df0fd745e8345baba9"
-  version = "4.7.1"
+  name = "github.com/google/go-cmp"
+  packages = [
+    "cmp",
+    "cmp/internal/diff",
+    "cmp/internal/function",
+    "cmp/internal/value"
+  ]
+  revision = "3af367b6b30c263d47e8895973edcca9a49cf029"
+  version = "v0.2.0"
+
+[[projects]]
+  name = "github.com/gotestyourself/gotestyourself"
+  packages = [
+    "assert",
+    "assert/cmp",
+    "internal/format",
+    "internal/source"
+  ]
+  revision = "03704babdbbc36b67d9a4cd94c9e00adf82f339f"
+  version = "v1.3.0"
 
 [[projects]]
   name = "github.com/inconshreveable/mousetrap"
   packages = ["."]
   revision = "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75"
   version = "v1.0"
+
+[[projects]]
+  name = "github.com/opsidian/parsley"
+  packages = [
+    "ast",
+    "ast/builder",
+    "combinator",
+    "data",
+    "parser",
+    "parsley",
+    "reader",
+    "text",
+    "text/terminal"
+  ]
+  revision = "ecf22873d952728e0535173be128fd52873234cd"
+  version = "0.5.0"
+
+[[projects]]
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  version = "v0.8.0"
+
+[[projects]]
+  name = "github.com/pmezard/go-difflib"
+  packages = ["difflib"]
+  revision = "792786c7400a136282c1664665ae0a8db921c6c2"
+  version = "v1.0.0"
 
 [[projects]]
   name = "github.com/spf13/cobra"
@@ -28,6 +72,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "0f74c8d1d02ed0698857904b7bf06b2fee12216fe4f9a309dcaa6b4199ffe6c1"
+  inputs-digest = "8ba9164e3336336811a41b75391b28b6569957b7ccf7827740bd168c7207ec3d"
   solver-name = "gps-cdcl"
   solver-version = 1

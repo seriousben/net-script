@@ -1,0 +1,17 @@
+# Websocket connection
+WS http://example.com
+User-Agent: net script
+Authorization: ai jwt
+
+ws message 1
+ws message 2
+ws message 3
+ws message 4
+ws message 5
+ws message 6
+ws message 7
+
+## HTTP GET call
+WS http://example.com
+User-Agent: net script
+Cookie: cookie=cookie-value

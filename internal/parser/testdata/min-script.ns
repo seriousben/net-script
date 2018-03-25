@@ -1,0 +1,4 @@
+# Websocket connection
+WS wss://echo.websocket.org
+# HTTP GET call
+GET http://example.com
