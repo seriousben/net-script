@@ -24,33 +24,6 @@ type commandHeader struct {
 var newlineToken = terminal.Regexp("newline", "\n", true, 0, "NEWLINE")
 var spaceToken = terminal.Rune(' ', "SPACE")
 
-func commentsParser() parser.Func {
-	commentLine := combinator.Seq(
-		builder.Select(0),
-		terminal.Regexp("comment", "^#(.+)", false, 1, "COMMENT"),
-		combinator.Optional(newlineToken),
-	)
-
-	return combinator.Many1(
-		builder.All(
-			"COMMENTS",
-			ast.InterpreterFunc(func(ctx interface{}, nodes []ast.Node) (interface{}, reader.Error) {
-				comments := []string{}
-				for _, node := range nodes {
-					val, _ := node.Value(ctx)
-					comment, _ := val.(string)
-					commentContent := strings.Trim(comment, " #")
-					if commentContent != "" {
-						comments = append(comments, commentContent)
-					}
-				}
-				return comments, nil
-			}),
-		),
-		commentLine,
-	)
-}
-
 func commandHeaderParser() parser.Func {
 	return combinator.Seq(
 		builder.All(
@@ -91,50 +64,41 @@ func headerParser() parser.Func {
 }
 
 func headersParser() parser.Func {
-	headerLine := combinator.Seq(
-		builder.Select(0),
-		headerParser(),
-		combinator.Optional(newlineToken),
-	)
+	headersInterp := ast.InterpreterFunc(func(ctx interface{}, nodes []ast.Node) (interface{}, reader.Error) {
+		headers := make(http.Header)
+		for i := 0; i < len(nodes); i += 2 {
+			node := nodes[i]
+			val, _ := node.Value(ctx)
+			headerVals, _ := val.([]string)
+			headers.Add(headerVals[0], headerVals[1])
+		}
+		return headers, nil
+	})
 
-	return combinator.Many(
-		builder.All(
-			"HEADERS",
-			ast.InterpreterFunc(func(ctx interface{}, nodes []ast.Node) (interface{}, reader.Error) {
-				headers := make(http.Header)
-				for _, node := range nodes {
-					val, _ := node.Value(ctx)
-					headerVals, _ := val.([]string)
-					headers.Add(headerVals[0], headerVals[1])
-				}
-				return headers, nil
-			}),
-		),
-		headerLine,
-	)
+	return combinator.SepBy1(
+		"HEADER_LINE",
+		headerParser(),
+		newlineToken,
+		headersInterp,
+	).Parse
 }
 
 func bodyParser() parser.Func {
-	bodyLine := combinator.Seq(
-		builder.Select(0),
-		terminal.Regexp("body line", ".+", false, 0, "BODY_LINE"),
-		combinator.Optional(newlineToken),
-	)
+	bodyLineInterp := ast.InterpreterFunc(func(ctx interface{}, nodes []ast.Node) (interface{}, reader.Error) {
+		body := []string{}
+		for _, node := range nodes {
+			val, _ := node.Value(ctx)
+			body = append(body, val.(string))
+		}
+		return []byte(strings.Join(body, "")), nil
+	})
 
-	return combinator.Many(
-		builder.All(
-			"BODY",
-			ast.InterpreterFunc(func(ctx interface{}, nodes []ast.Node) (interface{}, reader.Error) {
-				body := []string{}
-				for _, node := range nodes {
-					val, _ := node.Value(ctx)
-					body = append(body, val.(string))
-				}
-				return []byte(strings.Join(body, "\n")), nil
-			}),
-		),
-		bodyLine,
-	)
+	return combinator.SepBy1(
+		"BODY",
+		terminal.Regexp("body line", ".+", false, 0, "BODY_LINE"),
+		newlineToken,
+		bodyLineInterp,
+	).Parse
 }
 
 func commandParser() parser.Func {
@@ -143,25 +107,45 @@ func commandParser() parser.Func {
 			"LINES",
 			ast.InterpreterFunc(func(ctx interface{}, nodes []ast.Node) (interface{}, reader.Error) {
 				commentsRaw, _ := nodes[0].Value(ctx)
-				comments := commentsRaw.([]string)
+				comment, _ := commentsRaw.(string)
+				comment = strings.Trim(comment, " #")
 
-				cmdHeaderRaw, _ := nodes[1].Value(ctx)
+				cmdHeaderRaw, _ := nodes[2].Value(ctx)
 				cmdHeader := cmdHeaderRaw.(commandHeader)
 
 				headers := http.Header{}
-				if nodes[2] != nil {
-					headersRaw, _ := nodes[2].Value(ctx)
-					headers = headersRaw.(http.Header)
+				body := []byte{}
+
+				if nodes[3] != nil {
+					var hdrBodyComb []interface{}
+					hrdBodyRaw, _ := nodes[3].Value(ctx)
+					hdrBodyComb = hrdBodyRaw.([]interface{})
+
+					if hdrBodyComb[0] != nil {
+						headers = hdrBodyComb[0].(http.Header)
+					}
+
+					if hdrBodyComb[1] != nil {
+						body = hdrBodyComb[1].([]byte)
+					}
 				}
 
-				body := []byte{}
-				if nodes[3] != nil {
-					bodyRaw, _ := nodes[3].Value(ctx)
-					body = bodyRaw.([]byte)
-				}
+				/*
+					headers := http.Header{}
+					if nodes[3] != nil {
+						headersRaw, _ := nodes[3].Value(ctx)
+						headers = headersRaw.(http.Header)
+					}
+
+					body := []byte{}
+					if nodes[4] != nil {
+						bodyRaw, _ := nodes[4].Value(ctx)
+						body = bodyRaw.([]byte)
+					}
+				*/
 
 				return types.Command{
-					Comment: strings.Join(comments, "\n"),
+					Comment: comment,
 					Method:  cmdHeader.Method,
 					URL:     cmdHeader.URL,
 					Headers: headers,
@@ -169,42 +153,84 @@ func commandParser() parser.Func {
 				}, nil
 			}),
 		),
-		commentsParser(),
+		terminal.Regexp("comment", "^#(.+)", false, 1, "COMMENT"),
+		newlineToken,
 		commandHeaderParser(),
-		combinator.Optional(combinator.Seq(
-			builder.Select(1),
-			newlineToken,
-			headersParser(),
-		)),
-		combinator.Optional(combinator.Seq(
-			builder.Select(1),
-			newlineToken,
-			bodyParser(),
+		combinator.Optional(combinator.Choice(
+			"BODY-HEADER-COMBINATIONS",
+			combinator.Seq(
+				builder.All(
+					"COMB-BOTH",
+					ast.InterpreterFunc(func(ctx interface{}, nodes []ast.Node) (interface{}, reader.Error) {
+						hdr, _ := nodes[1].Value(ctx)
+						body, _ := nodes[4].Value(ctx)
+						data := make([]interface{}, 2)
+						data[0] = hdr
+						data[1] = body
+						return data, nil
+					}),
+				),
+				newlineToken,
+				headersParser(),
+				newlineToken,
+				newlineToken,
+				bodyParser(),
+			),
+			combinator.Seq(
+				builder.All(
+					"COMB-HDR",
+					ast.InterpreterFunc(func(ctx interface{}, nodes []ast.Node) (interface{}, reader.Error) {
+						hdr, _ := nodes[1].Value(ctx)
+						data := make([]interface{}, 2)
+						data[0] = hdr
+						data[1] = nil
+						return data, nil
+					}),
+				),
+				newlineToken,
+				headersParser(),
+			),
+			combinator.Seq(
+				builder.All(
+					"COMB-BODY",
+					ast.InterpreterFunc(func(ctx interface{}, nodes []ast.Node) (interface{}, reader.Error) {
+						body, _ := nodes[2].Value(ctx)
+						data := make([]interface{}, 2)
+						data[0] = nil
+						data[1] = body
+						return data, nil
+					}),
+				),
+				newlineToken,
+				newlineToken,
+				bodyParser(),
+			),
 		)),
 	)
 }
 
 func scriptParser() parser.Func {
-	command := combinator.Seq(
-		builder.Select(1),
-		combinator.Many(builder.Nil(), newlineToken),
-		commandParser(),
-		combinator.Many(builder.Nil(), newlineToken),
-	)
+	commandInterp := ast.InterpreterFunc(func(ctx interface{}, nodes []ast.Node) (interface{}, reader.Error) {
+		cmds := []types.Command{}
+		for i := 0; i < len(nodes); i += 2 {
+			node := nodes[i]
+			val, err := node.Value(ctx)
+			if err != nil {
+				return nil, err
+			}
+			cmds = append(cmds, val.(types.Command))
+		}
+		return cmds, nil
+	})
 
-	return combinator.Many(
-		builder.All(
-			"SCRIPT",
-			ast.InterpreterFunc(func(ctx interface{}, nodes []ast.Node) (interface{}, reader.Error) {
-				cmds := []types.Command{}
-				for _, node := range nodes {
-					val, _ := node.Value(ctx)
-					cmds = append(cmds, val.(types.Command))
-				}
-				return cmds, nil
-			}),
+	return combinator.SepBy(
+		"SCRIPT",
+		commandParser(),
+		combinator.Many1(
+			builder.Nil(),
+			terminal.Regexp("newline", "\n", true, 0, "NEWLINE"),
 		),
-		command,
+		commandInterp,
 	)
 }
 
